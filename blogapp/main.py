@@ -18,6 +18,16 @@ class BlogPost(SQLModel, table=True):
     text: str
 
 
+class ContactForm(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    date: datetime = Field(default_factory=datetime.now)
+    name: str
+    company: str
+    email: str = Field(max_length=50)
+    phone_number: int
+    message: str
+
+
 # db setup
 
 sqlite_url = "sqlite:///blog.db"
@@ -43,6 +53,26 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup():
     create_db_and_tables()
+
+
+@app.post("/create_message/", response_model=ContactForm)
+def create_message(form: ContactForm):
+    with Session(engine) as session:
+        session.add(form)
+        session.commit()
+        session.refresh(form)
+
+        return form
+
+
+@app.get("/messages/", response_model=list[ContactForm])
+def read_blogs():
+    with Session(engine) as session:
+        messages = session.exec(
+            select(ContactForm).order_by(ContactForm.date.desc())
+        ).all()
+
+        return messages
 
 
 @app.post("/create_blog/", response_model=BlogPost)
