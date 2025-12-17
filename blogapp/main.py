@@ -24,7 +24,7 @@ class ContactForm(SQLModel, table=True):
     name: str
     company: str
     email: str = Field(max_length=50)
-    phone_number: int
+    phone_number: str
     message: str
 
 
