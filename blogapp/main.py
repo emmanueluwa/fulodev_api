@@ -33,7 +33,7 @@ class ContactForm(SQLModel, table=True):
 
 sqlite_url = "sqlite:///blog.db"
 # postgres
-DATABASE_URL = os.getnenv("DATABASE_URL", sqlite_url)
+DATABASE_URL = os.getenv("DATABASE_URL", sqlite_url)
 
 engine = create_engine(DATABASE_URL, echo=True)
 
