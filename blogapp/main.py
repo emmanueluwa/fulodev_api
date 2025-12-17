@@ -3,6 +3,7 @@ JSON -> BlogPost -> SQL
 SQL -> BogPost -> JSON
 """
 
+import os
 from datetime import datetime
 from typing import Optional
 
@@ -31,7 +32,10 @@ class ContactForm(SQLModel, table=True):
 # db setup
 
 sqlite_url = "sqlite:///blog.db"
-engine = create_engine(sqlite_url, echo=True)
+# postgres
+DATABASE_URL = os.getnenv("DATABASE_URL", sqlite_url)
+
+engine = create_engine(DATABASE_URL, echo=True)
 
 
 def create_db_and_tables():
